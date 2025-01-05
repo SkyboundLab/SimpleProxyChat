@@ -36,6 +36,9 @@ dependencies {
     implementation("org.bstats", "bstats-velocity", "3.0.2")
     implementation("org.bstats", "bstats-bungeecord", "3.0.2")
 
+    // YepLib Support
+    implementation("com.github.unilock:yeplib:2.3.0")
+
     // LuckPerms Support
     compileOnly("net.luckperms", "api", "5.4")
 

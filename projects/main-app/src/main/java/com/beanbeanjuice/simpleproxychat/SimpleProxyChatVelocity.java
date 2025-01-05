@@ -15,6 +15,7 @@ import com.beanbeanjuice.simpleproxychat.utility.helper.WhisperHandler;
 import com.beanbeanjuice.simpleproxychat.utility.config.Permission;
 import com.beanbeanjuice.simpleproxychat.utility.epoch.EpochHelper;
 import com.beanbeanjuice.simpleproxychat.utility.status.ServerStatusManager;
+import com.beanbeanjuice.simpleproxychat.yep.YepListener;
 import com.google.inject.Inject;
 import com.beanbeanjuice.simpleproxychat.chat.ChatHandler;
 import com.beanbeanjuice.simpleproxychat.utility.listeners.velocity.VelocityServerListener;
@@ -31,6 +32,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import de.myzelyam.api.vanish.VelocityVanishAPI;
 import litebans.api.Database;
 import lombok.Getter;
@@ -47,6 +49,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 
 public class SimpleProxyChatVelocity implements ISimpleProxyChat {
 
@@ -67,6 +70,11 @@ public class SimpleProxyChatVelocity implements ISimpleProxyChat {
     private PluginManager pluginManager;
 
     private final File dataDirectory;
+
+    public static final MinecraftChannelIdentifier YepIdentifier = MinecraftChannelIdentifier.create("velocity", "yep");
+
+    @Nullable
+    private YepListener yep = null;
 
     @Inject
     public SimpleProxyChatVelocity(ProxyServer proxyServer, Logger logger, @DataDirectory Path dataDirectory, Metrics.Factory metricsFactory) {
@@ -97,7 +105,7 @@ public class SimpleProxyChatVelocity implements ISimpleProxyChat {
             catch (Exception e) { this.getLogger().warn("There was an error starting the discord bot: {}", e.getMessage()); }
         }).schedule();
 
-        hookPlugins();
+        hookPlugins(); // Ensure this line is present
         registerListeners();
         registerCommands();
 
@@ -191,6 +199,12 @@ public class SimpleProxyChatVelocity implements ISimpleProxyChat {
             banHelper.initialize();
         } else {
             config.overwrite(ConfigKey.USE_SIMPLE_PROXY_CHAT_BANNING_SYSTEM, false);
+        }
+
+        if (this.isYepEnabled()) {
+            this.getLogger().info("YepLib support has been enabled.");
+            this.yep = new YepListener(this, this.epochHelper);
+            this.yep.register(this.proxyServer);
         }
     }
 
@@ -304,6 +318,10 @@ public class SimpleProxyChatVelocity implements ISimpleProxyChat {
         if (!this.isLiteBansEnabled()) return Optional.empty();
 
         return Optional.ofNullable(Database.get());
+    }
+
+    public boolean isYepEnabled() {
+        return this.pluginManager.isLoaded("yeplib");
     }
 
     @Override
