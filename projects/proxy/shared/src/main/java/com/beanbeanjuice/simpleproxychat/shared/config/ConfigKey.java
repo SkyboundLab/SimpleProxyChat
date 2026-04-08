@@ -105,6 +105,16 @@ public enum ConfigKey {
     DISCORD_PROXY_STATUS_MODULE_OFFLINE (ConfigFileType.MESSAGES, "discord.proxy-status.messages.offline", String.class),
     DISCORD_PROXY_STATUS_MODULE_USE_TIMESTAMP (ConfigFileType.MESSAGES, "discord.proxy-status.messages.use-timestamp", Boolean.class),
 
+    DISCORD_DEATH_ENABLED (ConfigFileType.MESSAGES, "discord.death.enabled", Boolean.class),
+    DISCORD_DEATH_MESSAGE (ConfigFileType.MESSAGES, "discord.death.message", String.class),
+    DISCORD_DEATH_USE_TIMESTAMP (ConfigFileType.MESSAGES, "discord.death.use-timestamp", Boolean.class),
+    DISCORD_DEATH_USE_EMBED (ConfigFileType.MESSAGES, "discord.death.use-embed", Boolean.class),
+
+    DISCORD_ADVANCEMENT_ENABLED (ConfigFileType.MESSAGES, "discord.advancement.enabled", Boolean.class),
+    DISCORD_ADVANCEMENT_MESSAGE (ConfigFileType.MESSAGES, "discord.advancement.message", String.class),
+    DISCORD_ADVANCEMENT_USE_TIMESTAMP (ConfigFileType.MESSAGES, "discord.advancement.use-timestamp", Boolean.class),
+    DISCORD_ADVANCEMENT_USE_EMBED (ConfigFileType.MESSAGES, "discord.advancement.use-embed", Boolean.class),
+
     // CONSOLE STUFF
     CONSOLE_CHAT (ConfigFileType.MESSAGES, "console.chat", Boolean.class),
     CONSOLE_JOIN (ConfigFileType.MESSAGES, "console.join", Boolean.class),

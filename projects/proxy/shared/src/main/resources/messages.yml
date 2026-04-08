@@ -95,6 +95,16 @@ discord:
       online: "Online ✅"
       offline: "Offline ⛔"
       use-timestamp: true
+  death:
+    enabled: true
+    message: "%death_message%"
+    use-timestamp: true
+    use-embed: true
+  advancement:
+    enabled: true
+    message: "%player% has made the advancement __%title%__\n_%description%_"
+    use-timestamp: true
+    use-embed: true
 
 # Console Stuff - Uses Minecraft Messages
 console:
@@ -110,4 +120,4 @@ console:
 update-message: "&7There is an update! You are on &c%old%. New version is &a%new%&7: &6%link%"
 
 # DO NOT TOUCH THIS
-file-version: 10
+file-version: 11

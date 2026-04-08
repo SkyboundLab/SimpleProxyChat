@@ -57,7 +57,7 @@ gradle.properties
 .classpath
 .project
 .settings/
-/bin/
+bin/
 
 # Files containing safety info
 .env
@@ -133,3 +133,4 @@ dkms.conf
 
 # Ignore Gradle build output directory
 build
+.factorypath

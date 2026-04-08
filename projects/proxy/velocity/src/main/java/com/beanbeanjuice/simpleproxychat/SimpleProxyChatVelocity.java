@@ -16,6 +16,7 @@ import com.beanbeanjuice.simpleproxychat.shared.ISimpleProxyChat;
 import com.beanbeanjuice.simpleproxychat.shared.helper.WhisperHandler;
 import com.beanbeanjuice.simpleproxychat.shared.config.Permission;
 import com.beanbeanjuice.simpleproxychat.shared.status.ServerStatusManager;
+import com.beanbeanjuice.simpleproxychat.yep.YepLibListener;
 import com.google.inject.Inject;
 import com.beanbeanjuice.simpleproxychat.shared.chat.ChatHandler;
 import com.beanbeanjuice.simpleproxychat.utility.listeners.VelocityServerListener;
@@ -212,6 +213,10 @@ public class SimpleProxyChatVelocity implements ISimpleProxyChat {
 
         this.proxyServer.getEventManager().register(this, new VelocityPluginMessagingListener(this, serverListener));
         this.proxyServer.getChannelRegistrar().register(VelocityPluginMessagingListener.IDENTIFIER);
+
+        // Register YepLib listener for death/advancement messages
+        this.proxyServer.getEventManager().register(this, new YepLibListener(chatHandler));
+        this.proxyServer.getChannelRegistrar().register(YepLibListener.YEP_GENERIC);
 
         whisperHandler = new WhisperHandler();
     }

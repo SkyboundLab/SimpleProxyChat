@@ -279,6 +279,87 @@ public class ChatHandler {
         }
     }
 
+    public void runProxyDeathMessage(String playerName, String deathMessage, String serverName) {
+        String discordConfigString = config.get(ConfigKey.DISCORD_DEATH_MESSAGE).asString();
+        String aliasedServerName = Helper.convertAlias(config, serverName);
+
+        HashMap<String, String> replacements = new HashMap<>(Map.ofEntries(
+                Map.entry("player", playerName),
+                Map.entry("death_message", deathMessage),
+                Map.entry("server", aliasedServerName),
+                Map.entry("original_server", serverName),
+                Map.entry("epoch", String.valueOf(EpochHelper.getEpochSecond())),
+                Map.entry("time", getTimeString()),
+                Map.entry("plugin-prefix", config.get(ConfigKey.PLUGIN_PREFIX).asString())
+        ));
+
+        String discordMessage = CommonHelper.replaceKeys(discordConfigString, replacements);
+
+        // Log to Discord
+        DISCORD_SENT: if (config.get(ConfigKey.DISCORD_DEATH_ENABLED).asBoolean()) {
+            if (!config.get(ConfigKey.DISCORD_DEATH_USE_EMBED).asBoolean()) {
+                discordBot.sendMessage(discordMessage);
+                break DISCORD_SENT;
+            }
+
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                    .setDescription(discordMessage)
+                    .setColor(Color.DARK_GRAY);
+
+            if (config.get(ConfigKey.DISCORD_DEATH_USE_TIMESTAMP).asBoolean()) embedBuilder.setTimestamp(EpochHelper.getEpochInstant());
+            discordBot.sendMessageEmbed(embedBuilder.build());
+        }
+    }
+
+    public void runProxyAdvancementMessage(String playerName, String frameType, String title, String description, String serverName) {
+        String discordConfigString = config.get(ConfigKey.DISCORD_ADVANCEMENT_MESSAGE).asString();
+        String aliasedServerName = Helper.convertAlias(config, serverName);
+
+        Color embedColor;
+        switch (frameType.toUpperCase()) {
+            case "CHALLENGE":
+                embedColor = new Color(163, 38, 255); // Purple
+                break;
+            case "GOAL":
+                embedColor = new Color(86, 194, 66); // Green
+                break;
+            case "TASK":
+            default:
+                embedColor = new Color(250, 166, 26); // Gold
+                break;
+        }
+
+        HashMap<String, String> replacements = new HashMap<>(Map.ofEntries(
+                Map.entry("player", playerName),
+                Map.entry("title", title),
+                Map.entry("description", description),
+                Map.entry("frame", frameType),
+                Map.entry("server", aliasedServerName),
+                Map.entry("original_server", serverName),
+                Map.entry("epoch", String.valueOf(EpochHelper.getEpochSecond())),
+                Map.entry("time", getTimeString()),
+                Map.entry("plugin-prefix", config.get(ConfigKey.PLUGIN_PREFIX).asString())
+        ));
+
+        String discordMessage = CommonHelper.replaceKeys(discordConfigString, replacements);
+
+        // Log to Discord
+        DISCORD_SENT: if (config.get(ConfigKey.DISCORD_ADVANCEMENT_ENABLED).asBoolean()) {
+            if (!config.get(ConfigKey.DISCORD_ADVANCEMENT_USE_EMBED).asBoolean()) {
+                discordBot.sendMessage(discordMessage);
+                break DISCORD_SENT;
+            }
+
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                    .setTitle("Advancement Made!")
+                    .setDescription(discordMessage)
+                    .setColor(embedColor);
+
+            if (config.get(ConfigKey.DISCORD_ADVANCEMENT_USE_TIMESTAMP).asBoolean()) embedBuilder.setTimestamp(EpochHelper.getEpochInstant());
+            discordBot.sendMessageEmbed(embedBuilder.build());
+        }
+    }
+
     /**
      * Creates a sanitized {@link EmbedBuilder} based on the message.
      * @param playerUUID The {@link UUID} of the in-game player.
